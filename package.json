@@ -1,0 +1,9 @@
+{
+  "name": "use-request",
+  "version": "1.0.0",
+  "description": "A Custom React Hook for request data.",
+  "main": "lib/index.js",
+  "repository": "https://yuhongda@github.com/yuhongda/useRequest.git",
+  "author": "yuhongda <silverage.y@gmail.com>",
+  "license": "MIT"
+}
