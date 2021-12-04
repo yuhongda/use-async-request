@@ -2,10 +2,11 @@ import dts from 'rollup-plugin-dts'
 import esbuild from 'rollup-plugin-esbuild'
 import replace from 'rollup-plugin-replace'
 import resolve from 'rollup-plugin-node-resolve'
+import type { RollupOptions } from 'rollup'
 
 const format = process.env.FORMAT || 'esm'
 
-const config = {
+const config: RollupOptions = {
   input: './src/index.ts',
   plugins: [
     resolve({
@@ -29,7 +30,7 @@ if (format === 'esm' || format === 'cjs' || format === 'umd') {
         : `lib/${format}/use-request.${format}.js`
   }
 
-  config.plugins.push(
+  config.plugins?.push(
     esbuild({
       // All options are optional
       include: /\.[jt]sx?$/, // default, inferred from `loaders` option
@@ -66,7 +67,7 @@ if (format === 'umd') {
         ? 'lib/umd/use-request.min.js'
         : 'lib/umd/use-request.js'
   }
-  config.plugins.push(
+  config.plugins?.push(
     replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     })
@@ -78,7 +79,7 @@ if (format === 'dts') {
     format: 'es',
     file: 'types/use-request.d.ts'
   }
-  config.plugins.push(dts())
+  config.plugins?.push(dts())
 }
 
 export default config
