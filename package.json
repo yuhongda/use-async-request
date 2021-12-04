@@ -12,6 +12,11 @@
     "index.d.ts",
     "README.md"
   ],
+  "keywords": [
+    "request",
+    "react",
+    "react hooks"
+  ],
   "scripts": {
     "demo": "yarn run build && cd demo && yarn dev",
     "lib": "babel src --out-dir lib --extensions \".js,.jsx,.ts,.tsx\" --config-file \"./.babelrc.js\"",
