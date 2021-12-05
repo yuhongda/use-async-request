@@ -22,5 +22,6 @@ export default {
     '^.+\\.(css|less|scss)$': '<rootDir>/__test__/cssTransform.js',
     '^(?!.*\\.(js|jsx|ts|tsx|css|less|scss|json)$)': '<rootDir>/__test__/fileTransform.js'
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!lodash-es/).+(js|jsx|ts|tsx|mjs)$']
+  transformIgnorePatterns: ['<rootDir>/node_modules/(?!lodash-es/).+(js|jsx|ts|tsx|mjs)$'],
+  coverageReporters: ['json-summary']
 }

@@ -5,7 +5,7 @@ import { useAsyncRequest } from '../../src'
 import axios from 'axios'
 import { getStoryById } from './api/hnApi'
 
-const StoryList: React.FC<{ storyId: number }> = ({ storyId }) => {
+const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
   const { data, loading, error, refetch, request, reset } = useAsyncRequest<any, typeof getStoryById>({
     defaultData: null,
     requestFunction: getStoryById,
@@ -38,4 +38,4 @@ const StoryList: React.FC<{ storyId: number }> = ({ storyId }) => {
   )
 }
 
-export default StoryList
+export default Story
