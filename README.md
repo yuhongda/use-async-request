@@ -42,6 +42,7 @@ const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
 
   return (
     <div>
+      {loading && <p>Loading...</p>}
       {error && <p>{error.message}</p>}
       {(data && (
         <>
