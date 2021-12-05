@@ -27,9 +27,9 @@
     "dts": "FORMAT=dts rollup -c",
     "build": "yarn run clear && yarn run lib && yarn run dts && yarn run cjs && yarn run esm && yarn run umd && yarn run min",
     "clear": "rm -rf lib/ && rm -rf index.d.ts && rm -rf README.md",
-    "test": "yarn run jest:clear && jest --config=jest.config.js",
+    "test": "jest",
     "jest:clear": "jest --clearCache",
-    "cover": "yarn run jest:clear && jest --coverage --config=jest.config.js",
+    "cover": "yarn run jest:clear && jest --coverage --config=jest.config.ts",
     "ci": "yarn run build && yarn run cover && codecov",
     "release": "npm publish",
     "release:next": "npm publish --tag next"
@@ -47,6 +47,7 @@
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.14.5",
     "@babel/types": "^7.14.8",
+    "@testing-library/react-hooks": "^7.0.2",
     "@types/jest": "^26.0.24",
     "@types/react": "^17.0.15",
     "@types/react-dom": "^17.0.9",
@@ -66,6 +67,7 @@
     "rollup-plugin-esbuild": "^4.7.2",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
+    "ts-node": "^10.4.0",
     "typescript": "^4.3.5"
   }
 }
