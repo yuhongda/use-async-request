@@ -13,10 +13,13 @@ export type UseRequestOptions<Data, RequestFunction> = {
   axiosCancelTokenSource?: CancelTokenSource
 }
 
-export type UseRequestResults<Data, RequestFunction> = {
+export type UseRequestData<Data> = {
   data: Data | null
   loading: boolean
   error: any
+}
+
+export interface UseRequestResults<Data, RequestFunction> extends UseRequestData<Data> {
   refetch: () => void
   request: () => Promise<Data | null>
   reset: () => void
@@ -38,10 +41,7 @@ export type UseRequestAction<TData> =
 const defaultResult = {
   data: null,
   loading: false,
-  error: null,
-  refetch: () => {},
-  request: () => Promise.resolve(null),
-  reset: () => {}
+  error: null
 }
 
 const defaultTransformFunction = <TData>(res: any): TData => res?.data
@@ -61,10 +61,7 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
     return auto ? +new Date() : 0
   })
   const [result, dispatch] = useReducer(
-    (
-      result: UseRequestResults<TData, RequestFunc>,
-      action: UseRequestAction<TData>
-    ): UseRequestResults<TData, RequestFunc> => {
+    (result: UseRequestData<TData>, action: UseRequestAction<TData>): UseRequestData<TData> => {
       switch (action.type) {
         case UseRequestActionType.FETCH:
           return { ...result, data: defaultData, loading: true, error: null }
@@ -94,7 +91,7 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
     try {
       const res = await requestFunctionCallback()
 
-      if(res instanceof Error) {
+      if (res instanceof Error) {
         throw res
       }
 
