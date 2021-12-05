@@ -10,6 +10,7 @@
     "lib/",
     "types/",
     "index.d.ts",
+    "LICENSE",
     "README.md"
   ],
   "keywords": [
