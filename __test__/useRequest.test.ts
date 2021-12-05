@@ -1,12 +1,12 @@
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useRequest } from '../src/'
+import { useAsyncRequest } from '../src/'
 import axios from 'axios'
 
 describe('normal', () => {
-  it('useRequest run correctly', async () => {
+  it('useAsyncRequest run correctly', async () => {
     const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
     const { result, waitForNextUpdate } = renderHook(() =>
-      useRequest<string, typeof mockFetch>({
+      useAsyncRequest<string, typeof mockFetch>({
         defaultData: '',
         requestFunction: mockFetch,
         payload: {}
@@ -20,7 +20,7 @@ describe('normal', () => {
   it('checking loading statement', async () => {
     const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
     const { result, waitForNextUpdate } = renderHook(() =>
-      useRequest<string, typeof mockFetch>({
+      useAsyncRequest<string, typeof mockFetch>({
         defaultData: '',
         requestFunction: mockFetch,
         payload: {}
@@ -46,7 +46,7 @@ describe('normal', () => {
       })
     )
     const { result, waitForNextUpdate } = renderHook(() =>
-      useRequest<Record<string, any>[], typeof mockFetch>({
+      useAsyncRequest<Record<string, any>[], typeof mockFetch>({
         defaultData: [],
         requestFunction: mockFetch,
         transformFunction: (res: any) =>
@@ -74,7 +74,7 @@ describe('normal', () => {
       })
     )
     const { result, waitForNextUpdate } = renderHook(() =>
-      useRequest<string, typeof mockFetch>({
+      useAsyncRequest<string, typeof mockFetch>({
         defaultData: '',
         requestFunction: mockFetch,
         payload: {},
@@ -101,7 +101,7 @@ describe('normal', () => {
       })
     })
     const { result, waitForNextUpdate } = renderHook(() =>
-      useRequest({
+      useAsyncRequest({
         defaultData: 0,
         requestFunction: mockFetch,
         payload: {},
@@ -134,7 +134,7 @@ describe('normal', () => {
       })
     })
     const { result, waitForNextUpdate } = renderHook(() =>
-      useRequest({
+      useAsyncRequest({
         defaultData: 0,
         requestFunction: mockFetch,
         payload: {},
@@ -164,7 +164,7 @@ describe('normal', () => {
       })
     })
     const { result, waitForNextUpdate } = renderHook(() =>
-      useRequest({
+      useAsyncRequest({
         defaultData: 0,
         requestFunction: mockFetch,
         payload: {},
@@ -191,7 +191,7 @@ describe('normal', () => {
       return Promise.resolve(new Error('error'))
     })
     const { result, waitForNextUpdate } = renderHook(() =>
-      useRequest({
+      useAsyncRequest({
         defaultData: 0,
         requestFunction: mockFetch,
         payload: {},

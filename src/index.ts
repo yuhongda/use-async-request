@@ -1,20 +1,20 @@
-import { useRequest } from './useAsyncRequest'
+import { useAsyncRequest } from './useAsyncRequest'
 import type {
   RequestFunction,
   TransformFunction,
-  UseRequestOptions,
-  UseRequestResults,
-  UseRequestAction
+  UseAsyncRequestOptions,
+  UseAsyncRequestResults,
+  UseAsyncRequestAction
 } from './useAsyncRequest'
 
 export type {
   RequestFunction,
   TransformFunction,
-  UseRequestOptions,
-  UseRequestResults,
-  UseRequestAction
+  UseAsyncRequestOptions,
+  UseAsyncRequestResults,
+  UseAsyncRequestAction
 }
-export { useRequest }
+export { useAsyncRequest }
 export default {
-  useRequest
+  useAsyncRequest
 }

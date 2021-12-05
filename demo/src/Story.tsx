@@ -1,12 +1,12 @@
 import React from 'react'
 import './App.css'
 import { Button, List, Avatar, Spin, Alert } from 'antd'
-import { useRequest } from '../../src'
+import { useAsyncRequest } from '../../src'
 import axios from 'axios'
 import { getStoryById } from './api/hnApi'
 
 const StoryList: React.FC<{ storyId: number }> = ({ storyId }) => {
-  const { data, loading, error, refetch, request, reset } = useRequest<any, typeof getStoryById>({
+  const { data, loading, error, refetch, request, reset } = useAsyncRequest<any, typeof getStoryById>({
     defaultData: null,
     requestFunction: getStoryById,
     payload: {

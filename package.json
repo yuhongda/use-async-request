@@ -21,13 +21,13 @@
   "scripts": {
     "demo": "yarn run build && cd demo && yarn dev",
     "lib": "babel src --out-dir lib --extensions \".js,.jsx,.ts,.tsx\" --config-file \"./.babelrc.js\"",
-    "cjs": "FORMAT=cjs rollup -c",
-    "esm": "FORMAT=esm rollup -c",
-    "umd": "NODE_ENV=development FORMAT=umd rollup -c",
-    "min": "NODE_ENV=production FORMAT=umd rollup -c",
-    "dts": "FORMAT=dts rollup -c",
+    "cjs": "FORMAT=cjs rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
+    "esm": "FORMAT=esm rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
+    "umd": "NODE_ENV=development FORMAT=umd rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
+    "min": "NODE_ENV=production FORMAT=umd rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
+    "dts": "FORMAT=dts rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
     "build": "yarn run clear && yarn run lib && yarn run dts && yarn run cjs && yarn run esm && yarn run umd && yarn run min",
-    "clear": "rm -rf lib/ && rm -rf index.d.ts && rm -rf README.md",
+    "clear": "rm -rf lib/ && rm -rf types/",
     "test": "jest",
     "jest:clear": "jest --clearCache",
     "cover": "yarn run jest:clear && jest --coverage --config=jest.config.ts",
@@ -71,6 +71,7 @@
     "rollup-plugin-esbuild": "^4.7.2",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-typescript2": "^0.31.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.3.5"
   }

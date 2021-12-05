@@ -4,7 +4,7 @@ import type { CancelTokenSource, Canceler } from 'axios'
 export type RequestFunction = (...args: any[]) => Promise<any>
 export type TransformFunction<TData> = (res: any) => TData
 
-export type UseRequestOptions<Data, RequestFunction> = {
+export type UseAsyncRequestOptions<Data, RequestFunction> = {
   defaultData: Data
   requestFunction: RequestFunction
   payload?: any
@@ -13,30 +13,30 @@ export type UseRequestOptions<Data, RequestFunction> = {
   axiosCancelTokenSource?: CancelTokenSource
 }
 
-export type UseRequestData<Data> = {
+export type UseAsyncRequestData<Data> = {
   data: Data | null
   loading: boolean
   error: any
 }
 
-export interface UseRequestResults<Data, RequestFunction> extends UseRequestData<Data> {
+export interface UseAsyncRequestResults<Data, RequestFunction> extends UseAsyncRequestData<Data> {
   refetch: () => void
   request: () => Promise<Data | null>
   reset: () => void
 }
 
-export enum UseRequestActionType {
+export enum UseAsyncRequestActionType {
   FETCH = 'FETCH',
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
   RESET = 'RESET'
 }
 
-export type UseRequestAction<TData> =
-  | { type: UseRequestActionType.FETCH }
-  | { type: UseRequestActionType.SUCCESS; data: TData | null }
-  | { type: UseRequestActionType.ERROR; error: any }
-  | { type: UseRequestActionType.RESET }
+export type UseAsyncRequestAction<TData> =
+  | { type: UseAsyncRequestActionType.FETCH }
+  | { type: UseAsyncRequestActionType.SUCCESS; data: TData | null }
+  | { type: UseAsyncRequestActionType.ERROR; error: any }
+  | { type: UseAsyncRequestActionType.RESET }
 
 const defaultResult = {
   data: null,
@@ -46,9 +46,9 @@ const defaultResult = {
 
 const defaultTransformFunction = <TData>(res: any): TData => res?.data
 
-export const useRequest = <TData, RequestFunc extends RequestFunction>(
-  options: UseRequestOptions<TData, RequestFunc>
-): UseRequestResults<TData, RequestFunc> => {
+export const useAsyncRequest = <TData, RequestFunc extends RequestFunction>(
+  options: UseAsyncRequestOptions<TData, RequestFunc>
+): UseAsyncRequestResults<TData, RequestFunc> => {
   const {
     defaultData,
     requestFunction,
@@ -61,15 +61,15 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
     return auto ? +new Date() : 0
   })
   const [result, dispatch] = useReducer(
-    (result: UseRequestData<TData>, action: UseRequestAction<TData>): UseRequestData<TData> => {
+    (result: UseAsyncRequestData<TData>, action: UseAsyncRequestAction<TData>): UseAsyncRequestData<TData> => {
       switch (action.type) {
-        case UseRequestActionType.FETCH:
+        case UseAsyncRequestActionType.FETCH:
           return { ...result, data: defaultData, loading: true, error: null }
-        case UseRequestActionType.SUCCESS:
+        case UseAsyncRequestActionType.SUCCESS:
           return { ...result, data: action.data, loading: false, error: null }
-        case UseRequestActionType.ERROR:
+        case UseAsyncRequestActionType.ERROR:
           return { ...result, data: defaultData, loading: false, error: action.error }
-        case UseRequestActionType.RESET:
+        case UseAsyncRequestActionType.RESET:
           return { ...result, data: defaultData, loading: false, error: null }
         default:
           return result
@@ -87,7 +87,7 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
       return null
     }
 
-    dispatch({ type: UseRequestActionType.FETCH })
+    dispatch({ type: UseAsyncRequestActionType.FETCH })
     try {
       const res = await requestFunctionCallback()
 
@@ -103,10 +103,10 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
         data = defaultTransformFunction<TData>(res)
       }
 
-      dispatch({ type: UseRequestActionType.SUCCESS, data })
+      dispatch({ type: UseAsyncRequestActionType.SUCCESS, data })
       return data
     } catch (error) {
-      dispatch({ type: UseRequestActionType.ERROR, error })
+      dispatch({ type: UseAsyncRequestActionType.ERROR, error })
       return null
     }
   }, [requestFunctionCallback])
@@ -131,7 +131,7 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
 
   const reset = useCallback(() => {
     setUpdateKey(0)
-    dispatch({ type: UseRequestActionType.RESET })
+    dispatch({ type: UseAsyncRequestActionType.RESET })
   }, [dispatch])
 
   return { ...result, refetch, request, reset }

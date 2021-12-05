@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import { Radio, Button, List, Spin } from 'antd'
-import { useRequest } from '../../src'
+import { useAsyncRequest } from '../../src'
 import axios from 'axios'
 import { getStoryIds } from './api/hnApi'
 import Story from './Story'
@@ -15,7 +15,7 @@ type ResultDataType<T> = T[]
 
 function StoryList() {
   const [storyType, setStoryType] = useState<string>('newstories')
-  const { data, loading, error, refetch, request, reset } = useRequest<
+  const { data, loading, error, refetch, request, reset } = useAsyncRequest<
     ResultDataType<number>,
     typeof getStoryIds
   >({
