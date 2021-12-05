@@ -67,13 +67,13 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
     ): UseRequestResults<TData, RequestFunc> => {
       switch (action.type) {
         case UseRequestActionType.FETCH:
-          return { ...result, data: defaultData || null, loading: true, error: null }
+          return { ...result, data: defaultData, loading: true, error: null }
         case UseRequestActionType.SUCCESS:
           return { ...result, data: action.data, loading: false, error: null }
         case UseRequestActionType.ERROR:
-          return { ...result, data: defaultData || null, loading: false, error: action.error }
+          return { ...result, data: defaultData, loading: false, error: action.error }
         case UseRequestActionType.RESET:
-          return { ...result, data: defaultData || null, loading: false, error: null }
+          return { ...result, data: defaultData, loading: false, error: null }
         default:
           return result
       }
@@ -133,6 +133,7 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
   }, [fetchDataCallback])
 
   const reset = useCallback(() => {
+    setUpdateKey(0)
     dispatch({ type: UseRequestActionType.RESET })
   }, [dispatch])
 
