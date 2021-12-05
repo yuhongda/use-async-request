@@ -1,11 +1,11 @@
-import { useRequest } from './useRequest'
+import { useRequest } from './useAsyncRequest'
 import type {
   RequestFunction,
   TransformFunction,
   UseRequestOptions,
   UseRequestResults,
   UseRequestAction
-} from './useRequest'
+} from './useAsyncRequest'
 
 export type {
   RequestFunction,

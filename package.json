@@ -1,11 +1,11 @@
 {
-  "name": "use-request",
+  "name": "use-async-request",
   "version": "1.0.0",
   "description": "A Custom React Hook for request data.",
   "main": "lib/index.js",
-  "module": "lib/esm/use-request.esm.js",
-  "unpkg": "lib/umd/use-request.js",
-  "jsdelivr": "lib/umd/use-request.js",
+  "module": "lib/esm/use-async-request.esm.js",
+  "unpkg": "lib/umd/use-async-request.js",
+  "jsdelivr": "lib/umd/use-async-request.js",
   "files": [
     "lib/",
     "types/",
@@ -35,7 +35,10 @@
     "release": "npm publish",
     "release:next": "npm publish --tag next"
   },
-  "repository": "https://yuhongda@github.com/yuhongda/useRequest.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yuhongda/use-async-request.git"
+  },
   "author": "yuhongda <silverage.y@gmail.com>",
   "license": "MIT",
   "devDependencies": {

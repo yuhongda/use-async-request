@@ -25,9 +25,9 @@ if (format === 'esm' || format === 'cjs' || format === 'umd') {
     file:
       format === 'umd'
         ? process.env.NODE_ENV === 'production'
-          ? 'lib/umd/use-request.min.js'
-          : `lib/${format}/use-request.${format}.js`
-        : `lib/${format}/use-request.${format}.js`
+          ? 'lib/umd/use-async-request.min.js'
+          : `lib/${format}/use-async-request.${format}.js`
+        : `lib/${format}/use-async-request.${format}.js`
   }
 
   config.plugins?.push(
@@ -61,11 +61,11 @@ if (format === 'esm' || format === 'cjs' || format === 'umd') {
 if (format === 'umd') {
   config.output = {
     format,
-    name: 'use-request',
+    name: 'use-async-request',
     file:
       process.env.NODE_ENV === 'production'
-        ? 'lib/umd/use-request.min.js'
-        : 'lib/umd/use-request.js'
+        ? 'lib/umd/use-async-request.min.js'
+        : 'lib/umd/use-async-request.js'
   }
   config.plugins?.push(
     replace({
@@ -77,7 +77,7 @@ if (format === 'umd') {
 if (format === 'dts') {
   config.output = {
     format: 'es',
-    file: 'types/use-request.d.ts'
+    file: 'types/use-async-request.d.ts'
   }
   config.plugins?.push(dts())
 }

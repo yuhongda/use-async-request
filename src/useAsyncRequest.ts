@@ -116,7 +116,7 @@ export const useRequest = <TData, RequestFunc extends RequestFunction>(
 
     return () => {
       if (axiosCancelTokenSource) {
-        axiosCancelTokenSource.cancel('[use-request] Cancel Request')
+        axiosCancelTokenSource.cancel('[use-async-request] Cancel Request')
       }
     }
   }, [fetchDataCallback])
