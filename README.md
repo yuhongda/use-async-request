@@ -58,3 +58,8 @@ const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
 }
 ```
 
+## Roadmap
+
+- [ ] Batch async request
+- [ ] `<UseAsyncRequest /> ` components
+- [ ] More detail docs
