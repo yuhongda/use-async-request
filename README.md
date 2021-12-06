@@ -63,4 +63,5 @@ const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
 
 - [ ] Batch async request
 - [ ] `<UseAsyncRequest /> ` components
+- [ ] persistent
 - [ ] More detail docs
