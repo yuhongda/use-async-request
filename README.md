@@ -6,6 +6,9 @@
 ![Functions](https://img.shields.io/badge/functions-100%25-brightgreen.svg?style=flat)
 ![Lines](https://img.shields.io/badge/lines-100%25-brightgreen.svg?style=flat)
 
+
+![Size](https://badgen.net/bundlephobia/minzip/use-async-request)
+
 ## Installation
 
 ```js
