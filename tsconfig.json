@@ -1,6 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "jsx": "react",
     "outDir": "./dist",
     "module": "ESNext",
     "lib": [

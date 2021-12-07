@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react'
-import type { CancelTokenSource, Canceler } from 'axios'
+import type { CancelTokenSource } from 'axios'
 
 export type RequestFunction = (...args: any[]) => Promise<any>
 export type TransformFunction<TData> = (res: any) => TData
 
 export type UseAsyncRequestOptions<Data, RequestFunction, Payload> = {
-  defaultData: Data
+  defaultData?: Data
   requestFunction: RequestFunction
   payload?: Payload
   auto?: boolean
@@ -50,7 +50,7 @@ export const useAsyncRequest = <TData, RequestFunc extends RequestFunction, Payl
   options: UseAsyncRequestOptions<TData, RequestFunc, Payload>
 ): UseAsyncRequestResults<TData, RequestFunc> => {
   const {
-    defaultData,
+    defaultData = null,
     requestFunction,
     payload,
     auto = true,
@@ -61,7 +61,10 @@ export const useAsyncRequest = <TData, RequestFunc extends RequestFunction, Payl
     return auto ? +new Date() : 0
   })
   const [result, dispatch] = useReducer(
-    (result: UseAsyncRequestData<TData>, action: UseAsyncRequestAction<TData>): UseAsyncRequestData<TData> => {
+    (
+      result: UseAsyncRequestData<TData>,
+      action: UseAsyncRequestAction<TData>
+    ): UseAsyncRequestData<TData> => {
       switch (action.type) {
         case UseAsyncRequestActionType.FETCH:
           return { ...result, data: defaultData, loading: true, error: null }
