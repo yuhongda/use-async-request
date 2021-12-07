@@ -6,7 +6,7 @@ import axios from 'axios'
 import { getStoryById } from './api/hnApi'
 
 const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
-  const { data, loading, error, refetch, request, reset } = useAsyncRequest<any, typeof getStoryById>({
+  const { data, loading, error, refetch, request, reset } = useAsyncRequest({
     defaultData: null,
     requestFunction: getStoryById,
     payload: {

@@ -4,10 +4,10 @@ import type { CancelTokenSource, Canceler } from 'axios'
 export type RequestFunction = (...args: any[]) => Promise<any>
 export type TransformFunction<TData> = (res: any) => TData
 
-export type UseAsyncRequestOptions<Data, RequestFunction> = {
+export type UseAsyncRequestOptions<Data, RequestFunction, Payload> = {
   defaultData: Data
   requestFunction: RequestFunction
-  payload?: any
+  payload?: Payload
   auto?: boolean
   transformFunction?: TransformFunction<Data>
   axiosCancelTokenSource?: CancelTokenSource
@@ -46,8 +46,8 @@ const defaultResult = {
 
 const defaultTransformFunction = <TData>(res: any): TData => res?.data
 
-export const useAsyncRequest = <TData, RequestFunc extends RequestFunction>(
-  options: UseAsyncRequestOptions<TData, RequestFunc>
+export const useAsyncRequest = <TData, RequestFunc extends RequestFunction, Payload>(
+  options: UseAsyncRequestOptions<TData, RequestFunc, Payload>
 ): UseAsyncRequestResults<TData, RequestFunc> => {
   const {
     defaultData,
