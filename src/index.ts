@@ -6,15 +6,19 @@ import type {
   UseAsyncRequestResults,
   UseAsyncRequestAction
 } from './useAsyncRequest'
+import { AsyncRequest } from './components'
+import type { AsyncRequestProps } from './components'
 
 export type {
   RequestFunction,
   TransformFunction,
   UseAsyncRequestOptions,
   UseAsyncRequestResults,
-  UseAsyncRequestAction
+  UseAsyncRequestAction,
+  AsyncRequestProps
 }
-export { useAsyncRequest }
+export { useAsyncRequest, AsyncRequest }
 export default {
-  useAsyncRequest
+  useAsyncRequest,
+  AsyncRequest
 }

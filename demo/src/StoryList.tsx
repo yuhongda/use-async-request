@@ -12,12 +12,16 @@ const Wrapper = styled.div`
 `
 
 type ResultDataType<T> = T[]
+type payloadType = {
+  storyType: string
+}
 
 function StoryList() {
   const [storyType, setStoryType] = useState<string>('newstories')
   const { data, loading, error, refetch, request, reset } = useAsyncRequest<
     ResultDataType<number>,
-    typeof getStoryIds
+    typeof getStoryIds,
+    payloadType
   >({
     defaultData: [],
     requestFunction: getStoryIds,

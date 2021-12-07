@@ -2,7 +2,10 @@ import logo from './logo.svg'
 import './App.css'
 import styled from 'styled-components'
 import StoryList from './StoryList'
+import SingleStory from './SingleStory'
 import 'antd/dist/antd.css'
+import { Divider, Typography } from 'antd'
+const { Title } = Typography;
 
 type ResultDataType<T> = T[]
 
@@ -14,8 +17,12 @@ function App() {
   return (
     <Wrapper>
       <header className="App-header">
-        <h1>Hacker News</h1>
+        <Title>Hacker News</Title>
+        <Title level={2}>use-async-request()</Title>
         <StoryList />
+        <Divider />
+        <Title level={2}>{'<AsyncRequest />'}</Title>
+        <SingleStory />
       </header>
     </Wrapper>
   )
