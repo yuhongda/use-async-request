@@ -6,7 +6,7 @@ describe('normal', () => {
   it('useAsyncRequest run correctly', async () => {
     const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncRequest<string, typeof mockFetch>({
+      useAsyncRequest<string, typeof mockFetch, {}>({
         defaultData: '',
         requestFunction: mockFetch,
         payload: {}
@@ -20,7 +20,7 @@ describe('normal', () => {
   it('checking loading statement', async () => {
     const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncRequest<string, typeof mockFetch>({
+      useAsyncRequest<string, typeof mockFetch, {}>({
         defaultData: '',
         requestFunction: mockFetch,
         payload: {}
@@ -46,7 +46,7 @@ describe('normal', () => {
       })
     )
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncRequest<Record<string, any>[], typeof mockFetch>({
+      useAsyncRequest<Record<string, any>[], typeof mockFetch, {}>({
         defaultData: [],
         requestFunction: mockFetch,
         transformFunction: (res: any) =>
@@ -74,7 +74,7 @@ describe('normal', () => {
       })
     )
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncRequest<string, typeof mockFetch>({
+      useAsyncRequest<string, typeof mockFetch, {}>({
         defaultData: '',
         requestFunction: mockFetch,
         payload: {},

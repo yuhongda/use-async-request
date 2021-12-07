@@ -1401,12 +1401,20 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-"@types/cheerio@^0.22.22":
+"@types/cheerio@*", "@types/cheerio@^0.22.22":
   version "0.22.30"
   resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.30.tgz#6c1ded70d20d890337f0f5144be2c5e9ce0936e6"
   integrity sha512-t7ZVArWZlq3dFa9Yt33qFBQIK4CQd1Q3UJp0V+UhP6vgLWLM6Qug7vZuRSGXg45zXeB1Fm5X2vmBkEX58LV2Tw==
   dependencies:
     "@types/node" "*"
+
+"@types/enzyme@^3.10.10":
+  version "3.10.10"
+  resolved "https://registry.yarnpkg.com/@types/enzyme/-/enzyme-3.10.10.tgz#3a44cc66571432ab9e1773a831af3742beb39275"
+  integrity sha512-/D4wFhiEjUDfPu+j5FVK0g/jf7rqeEIpNfAI+kyxzLpw5CKO0drnW3W5NC38alIjsWgnyQ8pbuPF5+UD+vhVyg==
+  dependencies:
+    "@types/cheerio" "*"
+    "@types/react" "*"
 
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
