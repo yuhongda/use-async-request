@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { useAsyncRequest } from '../src/'
 import axios from 'axios'
 
-describe('normal', () => {
+describe('use-async-request() testing', () => {
   it('useAsyncRequest run correctly', async () => {
     const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
     const { result, waitForNextUpdate } = renderHook(() =>

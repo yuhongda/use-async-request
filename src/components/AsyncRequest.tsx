@@ -37,7 +37,7 @@ export const AsyncRequest: React.FC<AsyncRequestProps> = ({
     <div {...rest}>
       {loading && loadingElement}
       {error && ((ErrorComponent && <ErrorComponent error={error} refetch={refetch} />) || 'error')}
-      {data && (SuccessComponent && <SuccessComponent data={data} /> || null)}
+      {data && <SuccessComponent data={data} />}
       {children}
     </div>
   )
