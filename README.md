@@ -1,6 +1,14 @@
 # use-async-request
 > A custom React Hook for async request.
 
+## 🎨 Features
+
+- 🌟 Make async request w/ loading state, and the request is cancellable
+- 🌈 Support multi resquest (request sequentially)
+- 🎁 Ship React UI component `<AsyncRequest />`
+- 💪 Type safety
+- ☘️ Size less than 1KB
+
 ![Statements](https://img.shields.io/badge/statements-100%25-brightgreen.svg?style=flat)
 ![Branches](https://img.shields.io/badge/branches-92.1%25-brightgreen.svg?style=flat)
 ![Functions](https://img.shields.io/badge/functions-100%25-brightgreen.svg?style=flat)
@@ -9,7 +17,7 @@
 
 ![Size](https://badgen.net/bundlephobia/minzip/use-async-request)
 
-## Installation
+## 🔗 Installation
 
 ```js
 npm install --save use-async-request
@@ -19,7 +27,7 @@ OR
 yarn add use-async-request
 ```
 
-## Usage
+## 🔗 Usage
 
 ```jsx
 import { useAsyncRequest } from 'use-async-request'
@@ -30,27 +38,29 @@ async function getStoryById(params: Record<string, any>) {
     method: 'get',
     params,
     errorTitle: 'Get Hacker News new stories failed',
-    cancelToken: params.source?.token
+    signal: params.controller?.signal
   })
 }
 
 const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
   const { data, loading, error, refetch, request, reset } = useAsyncRequest<any, typeof getStoryById>({
     defaultData: null,
-    requestFunction: getStoryById,
-    payload: {
-      storyId
-    },
+    requestFunctions: [{
+      func: getStoryById,
+      payload: {
+        storyId
+      },  
+    }],
   })
 
   return (
     <div>
       {loading && <p>Loading...</p>}
       {error && <p>{error.message}</p>}
-      {(data && (
+      {(data && data[0] && (
         <>
-          <p><a href={data.url}>{data.title}</a></p>
-          <p>{data.by}</p>
+          <p><a href={data[0].url}>{data[0].title}</a></p>
+          <p>{data[0].by}</p>
         </>
       )) || <div></div>}
       <div>
@@ -62,9 +72,9 @@ const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
 }
 ```
 
-## Roadmap
+## 🔗 Roadmap
 
 - [x] Batch async request
-- [x] `<AsyncRequest /> ` components w/ demo
+- [x] `<AsyncRequest /> ` React UI components w/ demo
 - [ ] persisted
 - [ ] More detail docs
