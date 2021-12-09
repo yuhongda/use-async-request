@@ -53,7 +53,7 @@ async function getStoryById(params: Record<string, any>) {
 }
 
 const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
-  const { data, loading, error, refetch, request, reset } = useAsyncRequest<any, typeof getStoryById>({
+  const { data, loading, error, refetch, request, reset } = useAsyncRequest<any>({
     defaultData: null,
     requestFunctions: [{
       func: getStoryById,
