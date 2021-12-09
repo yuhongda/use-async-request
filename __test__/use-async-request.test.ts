@@ -6,32 +6,38 @@ describe('use-async-request() testing', () => {
   it('useAsyncRequest run correctly', async () => {
     const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncRequest<string, typeof mockFetch, {}>({
-        defaultData: '',
-        requestFunction: mockFetch,
-        payload: {}
+      useAsyncRequest<string>({
+        defaultData: [''],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ]
       })
     )
 
     await waitForNextUpdate()
-    expect(result.current.data).toBe('ok')
+    expect(result.current.data?.[0]).toBe('ok')
   })
 
   it('checking loading statement', async () => {
     const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncRequest<string, typeof mockFetch, {}>({
-        defaultData: '',
-        requestFunction: mockFetch,
-        payload: {}
+      useAsyncRequest<string>({
+        defaultData: [''],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ]
       })
     )
 
-    expect(result.current.data).toBe('')
+    expect(result.current.data?.[0]).toBe('')
     expect(result.current.loading).toBe(true)
     expect(result.current.error).toBe(null)
     await waitForNextUpdate()
-    expect(result.current.data).toBe('ok')
+    expect(result.current.data?.[0]).toBe('ok')
     expect(result.current.loading).toBe(false)
     expect(result.current.error).toBe(null)
   })
@@ -46,20 +52,24 @@ describe('use-async-request() testing', () => {
       })
     )
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncRequest<Record<string, any>[], typeof mockFetch, {}>({
-        defaultData: [],
-        requestFunction: mockFetch,
-        transformFunction: (res: any) =>
-          res.data?.map((item: any) => ({ value: item.code, label: item.name })),
-        payload: {}
+      useAsyncRequest<Record<string, any>[]>({
+        defaultData: [[]],
+        requestFunctions: [
+          {
+            func: mockFetch,
+            payload: {},
+            transform: (res: any) =>
+              res.data?.map((item: any) => ({ value: item.code, label: item.name }))
+          }
+        ]
       })
     )
 
-    expect(result.current.data).toEqual([])
+    expect(result.current.data?.[0]).toEqual([])
     expect(result.current.loading).toBe(true)
     expect(result.current.error).toBe(null)
     await waitForNextUpdate()
-    expect(result.current.data).toEqual([
+    expect(result.current.data?.[0]).toEqual([
       { value: 1, label: 'a' },
       { value: 2, label: 'b' }
     ])
@@ -74,20 +84,22 @@ describe('use-async-request() testing', () => {
       })
     )
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncRequest<string, typeof mockFetch, {}>({
-        defaultData: '',
-        requestFunction: mockFetch,
-        payload: {},
-        axiosCancelTokenSource: axios.CancelToken.source()
+      useAsyncRequest<string>({
+        defaultData: [''],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ]
       })
     )
 
-    expect(result.current.data).toEqual('')
+    expect(result.current.data?.[0]).toEqual('')
     expect(result.current.loading).toBe(true)
     expect(result.current.error).toBe(null)
     await waitForNextUpdate()
     act(() => result.current.reset())
-    expect(result.current.data).toEqual('')
+    expect(result.current.data?.[0]).toEqual('')
     expect(result.current.loading).toBe(false)
     expect(result.current.error).toBe(null)
   })
@@ -102,14 +114,16 @@ describe('use-async-request() testing', () => {
     })
     const { result, waitForNextUpdate } = renderHook(() =>
       useAsyncRequest({
-        defaultData: 0,
-        requestFunction: mockFetch,
-        payload: {},
-        axiosCancelTokenSource: axios.CancelToken.source()
+        defaultData: [0],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ]
       })
     )
 
-    expect(result.current.data).toEqual(0)
+    expect(result.current.data?.[0]).toEqual(0)
     expect(result.current.loading).toBe(true)
     expect(result.current.error).toBe(null)
     expect(mockFetch).toBeCalledTimes(1)
@@ -135,20 +149,22 @@ describe('use-async-request() testing', () => {
     })
     const { result, waitForNextUpdate } = renderHook(() =>
       useAsyncRequest({
-        defaultData: 0,
-        requestFunction: mockFetch,
-        payload: {},
-        axiosCancelTokenSource: axios.CancelToken.source()
+        defaultData: [0],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ]
       })
     )
 
-    expect(result.current.data).toEqual(0)
+    expect(result.current.data?.[0]).toEqual(0)
     expect(result.current.loading).toBe(true)
     expect(result.current.error).toBe(null)
     expect(mockFetch).toBeCalledTimes(1)
     await act(async () => {
       const res = await result.current.request()
-      expect(res).toEqual(2)
+      expect(res?.[0]).toEqual(2)
       expect(result.current.loading).toBe(false)
       expect(result.current.error).toBe(null)
       act(() => result.current.refetch())
@@ -165,15 +181,17 @@ describe('use-async-request() testing', () => {
     })
     const { result, waitForNextUpdate } = renderHook(() =>
       useAsyncRequest({
-        defaultData: 0,
-        requestFunction: mockFetch,
-        payload: {},
-        auto: false,
-        axiosCancelTokenSource: axios.CancelToken.source()
+        defaultData: [0],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ],
+        auto: false
       })
     )
 
-    expect(result.current.data).toEqual(0)
+    expect(result.current.data?.[0]).toEqual(0)
     expect(result.current.loading).toBe(false)
     expect(result.current.error).toBe(null)
     expect(mockFetch).toBeCalledTimes(0)
@@ -181,7 +199,7 @@ describe('use-async-request() testing', () => {
     expect(result.current.loading).toBe(true)
     await waitForNextUpdate()
     expect(mockFetch).toBeCalledTimes(1)
-    expect(result.current.data).toEqual(1)
+    expect(result.current.data?.[0]).toEqual(1)
     expect(result.current.loading).toBe(false)
     expect(result.current.error).toBe(null)
   })
@@ -192,20 +210,39 @@ describe('use-async-request() testing', () => {
     })
     const { result, waitForNextUpdate } = renderHook(() =>
       useAsyncRequest({
-        defaultData: 0,
-        requestFunction: mockFetch,
-        payload: {},
-        axiosCancelTokenSource: axios.CancelToken.source()
+        defaultData: [0],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ]
       })
     )
 
-    expect(result.current.data).toEqual(0)
+    expect(result.current.data?.[0]).toEqual(0)
     expect(result.current.loading).toBe(true)
     expect(result.current.error).toBe(null)
     await waitForNextUpdate()
-    expect(result.current.data).toEqual(0)
+    expect(result.current.data?.[0]).toEqual(0)
     expect(result.current.loading).toBe(false)
     expect(result.current.error).toEqual(new Error('error'))
   })
 
+  it('testing error: requestFunctions null', async () => {
+    try {
+      const { result, waitForNextUpdate } = renderHook(() =>
+        useAsyncRequest({
+          defaultData: [0],
+          requestFunctions: null
+        })
+      )
+
+      expect(result.current.data?.[0]).toEqual(0)
+      expect(result.current.loading).toBe(true)
+      expect(result.current.error).toBe(null)
+      await waitForNextUpdate()
+    } catch (e) {
+      expect(e).toEqual(new Error('"requestFunctions" is required'))
+    }
+  })
 })

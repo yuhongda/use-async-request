@@ -10,9 +10,13 @@ describe('<AsyncRequest /> testing', () => {
     act(() => {
       render(
         <AsyncRequest
-          requestFunction={mockFetch}
-          payload={{ storyType: 'topstories' }}
-          success={({ data }: { data: string }) => <div>{data}</div>}
+          requestFunctions={[
+            {
+              func: mockFetch,
+              payload: { storyType: 'topstories' }
+            }
+          ]}
+          success={({ data }: { data: string[] }) => <div>{data[0]}</div>}
         />
       )
     })
@@ -31,9 +35,13 @@ describe('<AsyncRequest /> testing', () => {
       render(
         <AsyncRequest
           defaultData={'default'}
-          requestFunction={mockFetch}
-          payload={{ storyType: 'topstories' }}
-          success={({ data }: { data: string }) => <div>{data}</div>}
+          requestFunctions={[
+            {
+              func: mockFetch,
+              payload: { storyType: 'topstories' }
+            }
+          ]}
+          success={({ data }: { data: string[] }) => <div>{data[0]}</div>}
         />
       )
     })
@@ -51,9 +59,13 @@ describe('<AsyncRequest /> testing', () => {
     act(() => {
       render(
         <AsyncRequest
-          requestFunction={mockFetch}
-          payload={{ storyType: 'topstories' }}
-          success={({ data }: { data: string }) => <div>custom success: {data}</div>}
+          requestFunctions={[
+            {
+              func: mockFetch,
+              payload: { storyType: 'topstories' }
+            }
+          ]}
+          success={({ data }: { data: string[] }) => <div>custom success: {data[0]}</div>}
         />
       )
     })
@@ -72,9 +84,13 @@ describe('<AsyncRequest /> testing', () => {
     act(() => {
       render(
         <AsyncRequest
-          requestFunction={mockFetch}
-          payload={{ storyType: 'topstories' }}
-          success={({ data }: { data: string }) => <div>{data}</div>}
+          requestFunctions={[
+            {
+              func: mockFetch,
+              payload: { storyType: 'topstories' }
+            }
+          ]}
+          success={({ data }: { data: string[] }) => <div>{data[0]}</div>}
         />
       )
     })
@@ -93,9 +109,13 @@ describe('<AsyncRequest /> testing', () => {
     act(() => {
       render(
         <AsyncRequest
-          requestFunction={mockFetch}
-          payload={{ storyType: 'topstories' }}
-          success={({ data }: { data: string }) => <div>{data}</div>}
+          requestFunctions={[
+            {
+              func: mockFetch,
+              payload: { storyType: 'topstories' }
+            }
+          ]}
+          success={({ data }: { data: string[] }) => <div>{data[0]}</div>}
           error={({ error }: { error: Error }) => <div>custom error: {error.message}</div>}
         />
       )
