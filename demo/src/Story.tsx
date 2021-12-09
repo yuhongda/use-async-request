@@ -2,28 +2,28 @@ import React from 'react'
 import './App.css'
 import { Button, List, Spin, Alert } from 'antd'
 import { useAsyncRequest } from '../../src'
-import axios from 'axios'
 import { getStoryById } from './api/hnApi'
 
 type StoryData = {
-    by: string
-    url: string
-    title: string
-}
-
-type PayloadType = {
-  storyId: number
+  by: string
+  url: string
+  title: string
 }
 
 const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
-  const { data, loading, error, refetch, request, reset } = useAsyncRequest<StoryData | null, typeof getStoryById, PayloadType>({
+  const { data, loading, error, refetch, request, reset } = useAsyncRequest<StoryData | null>({
     defaultData: null,
-    requestFunction: getStoryById,
-    payload: {
-      storyId
-    },
-    axiosCancelTokenSource: axios.CancelToken.source()
+    requestFunctions: [
+      {
+        func: getStoryById,
+        payload: {
+          storyId
+        }
+      }
+    ]
   })
+
+  const story = data?.[0] as StoryData | null
 
   const onRequestClick = async () => {
     const d = await request()
@@ -34,9 +34,9 @@ const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
     <List.Item>
       <Spin spinning={loading} />
       {error && <Alert message={error.message} type="error" showIcon />}
-      {(data && (
+      {(story && (
         <>
-          <List.Item.Meta title={<a href={data.url}>{data.title}</a>} description={data.by} />
+          <List.Item.Meta title={<a href={story.url}>{story.title}</a>} description={story.by} />
         </>
       )) || <div></div>}
       <div>

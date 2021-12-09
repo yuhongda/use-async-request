@@ -1,27 +1,28 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react'
-import type { CancelTokenSource } from 'axios'
 
-export type RequestFunction = (...args: any[]) => Promise<any>
 export type TransformFunction<TData> = (res: any) => TData
 
-export type UseAsyncRequestOptions<Data, RequestFunction, Payload> = {
-  defaultData?: Data
-  requestFunction: RequestFunction
-  payload?: Payload
+export type RequestFunction<TData> = {
+  func: (...args: any[]) => Promise<any>
+  payload?: any
+  transform?: TransformFunction<TData>
+}
+
+export type UseAsyncRequestOptions<Data> = {
+  defaultData?: (Data | null)[] | null
+  requestFunctions: RequestFunction<Data>[]
   auto?: boolean
-  transformFunction?: TransformFunction<Data>
-  axiosCancelTokenSource?: CancelTokenSource
 }
 
 export type UseAsyncRequestData<Data> = {
-  data: Data | null
+  data: (Data | null)[] | null
   loading: boolean
   error: any
 }
 
-export interface UseAsyncRequestResults<Data, RequestFunction> extends UseAsyncRequestData<Data> {
+export interface UseAsyncRequestResults<Data> extends UseAsyncRequestData<Data> {
   refetch: () => void
-  request: () => Promise<Data | null>
+  request: () => Promise<(Data | null)[] | null>
   reset: () => void
 }
 
@@ -34,7 +35,7 @@ export enum UseAsyncRequestActionType {
 
 export type UseAsyncRequestAction<TData> =
   | { type: UseAsyncRequestActionType.FETCH }
-  | { type: UseAsyncRequestActionType.SUCCESS; data: TData | null }
+  | { type: UseAsyncRequestActionType.SUCCESS; data: TData[] | null }
   | { type: UseAsyncRequestActionType.ERROR; error: any }
   | { type: UseAsyncRequestActionType.RESET }
 
@@ -46,17 +47,16 @@ const defaultResult = {
 
 const defaultTransformFunction = <TData>(res: any): TData => res?.data
 
-export const useAsyncRequest = <TData, RequestFunc extends RequestFunction, Payload>(
-  options: UseAsyncRequestOptions<TData, RequestFunc, Payload>
-): UseAsyncRequestResults<TData, RequestFunc> => {
-  const {
-    defaultData = null,
-    requestFunction,
-    payload,
-    auto = true,
-    transformFunction,
-    axiosCancelTokenSource
-  } = options
+export const useAsyncRequest = <TData>(
+  options: UseAsyncRequestOptions<TData>
+): UseAsyncRequestResults<TData> => {
+  const { defaultData = null, requestFunctions, auto = true } = options
+
+  if (!requestFunctions || !Array.isArray(requestFunctions) || requestFunctions.length == 0) {
+    throw new Error('"requestFunctions" is required')
+  }
+
+  const abortController = new AbortController()
   const [updateKey, setUpdateKey] = useState<number>(() => {
     return auto ? +new Date() : 0
   })
@@ -81,18 +81,10 @@ export const useAsyncRequest = <TData, RequestFunc extends RequestFunction, Payl
     Object.assign({}, defaultResult, { data: defaultData })
   )
 
-  const requestFunctionCallback = useCallback<RequestFunction>(() => {
-    return requestFunction({ ...payload, source: axiosCancelTokenSource })
-  }, [JSON.stringify(payload), JSON.stringify(axiosCancelTokenSource), updateKey])
-
-  const fetchDataCallback = useCallback<() => Promise<TData | null>>(async () => {
-    if (updateKey === 0) {
-      return null
-    }
-
-    dispatch({ type: UseAsyncRequestActionType.FETCH })
-    try {
-      const res = await requestFunctionCallback()
+  const requestFunctionsCallback = useCallback(async () => {
+    const results = []
+    for (const request of requestFunctions) {
+      const res = await request.func({ ...request.payload, controller: abortController })
 
       if (res instanceof Error) {
         throw res
@@ -100,11 +92,25 @@ export const useAsyncRequest = <TData, RequestFunc extends RequestFunction, Payl
 
       let data: TData | null = null
 
-      if (transformFunction) {
-        data = transformFunction(res)
+      if (request.transform) {
+        data = request.transform(res)
       } else {
         data = defaultTransformFunction<TData>(res)
       }
+
+      results.push(data)
+    }
+    return results
+  }, [JSON.stringify(requestFunctions.map(req => req.payload)), updateKey])
+
+  const fetchDataCallback = useCallback<() => Promise<TData[] | null>>(async () => {
+    if (updateKey === 0) {
+      return null
+    }
+
+    dispatch({ type: UseAsyncRequestActionType.FETCH })
+    try {
+      const data = await requestFunctionsCallback()
 
       dispatch({ type: UseAsyncRequestActionType.SUCCESS, data })
       return data
@@ -112,14 +118,14 @@ export const useAsyncRequest = <TData, RequestFunc extends RequestFunction, Payl
       dispatch({ type: UseAsyncRequestActionType.ERROR, error })
       return null
     }
-  }, [requestFunctionCallback])
+  }, [requestFunctionsCallback])
 
   useEffect(() => {
     fetchDataCallback()
 
     return () => {
-      if (axiosCancelTokenSource) {
-        axiosCancelTokenSource.cancel('[use-async-request] Cancel Request')
+      if (abortController) {
+        abortController.abort()
       }
     }
   }, [fetchDataCallback])

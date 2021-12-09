@@ -1,25 +1,20 @@
 import React from 'react'
-import type { ReactNode, ElementType } from 'react'
+import type { ReactNode } from 'react'
 import type { RequestFunction } from '..'
-import type { CancelTokenSource } from 'axios'
 import { useAsyncRequest } from '..'
 
-export interface AsyncRequestProps {
+export interface AsyncRequestProps<TData> {
   defaultData?: any
-  requestFunction: RequestFunction
-  payload?: Parameters<RequestFunction>[0]
-  axiosCancelTokenSource?: CancelTokenSource
+  requestFunctions: RequestFunction<TData>[]
   loading?: ReactNode
-  success: ElementType
-  error?: ElementType
+  success: React.FC<{ data: TData[]; refetch: () => void }>
+  error?: React.FC<{ error: any; refetch: () => void }>
   children?: ReactNode
 }
 
-export const AsyncRequest: React.FC<AsyncRequestProps> = ({
+export const AsyncRequest: React.FC<AsyncRequestProps<any>> = ({
   defaultData = null,
-  requestFunction,
-  payload,
-  axiosCancelTokenSource,
+  requestFunctions,
   loading: loadingElement = 'Loading...',
   success: SuccessComponent,
   error: ErrorComponent,
@@ -28,16 +23,14 @@ export const AsyncRequest: React.FC<AsyncRequestProps> = ({
 }) => {
   const { data, loading, error, refetch } = useAsyncRequest({
     defaultData,
-    requestFunction: requestFunction,
-    payload,
-    axiosCancelTokenSource
+    requestFunctions,
   })
 
   return (
     <div {...rest}>
       {loading && loadingElement}
       {error && ((ErrorComponent && <ErrorComponent error={error} refetch={refetch} />) || 'error')}
-      {data && <SuccessComponent data={data} />}
+      {data && <SuccessComponent data={data} refetch={refetch} />}
       {children}
     </div>
   )

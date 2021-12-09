@@ -2,7 +2,6 @@ import { useState } from 'react'
 import './App.css'
 import { Radio, Button, List, Spin } from 'antd'
 import { useAsyncRequest } from '../../src'
-import axios from 'axios'
 import { getStoryIds } from './api/hnApi'
 import Story from './Story'
 import styled from 'styled-components'
@@ -18,25 +17,24 @@ type payloadType = {
 
 function StoryList() {
   const [storyType, setStoryType] = useState<string>('newstories')
-  const { data, loading, error, refetch, request, reset } = useAsyncRequest<
-    ResultDataType<number>,
-    typeof getStoryIds,
-    payloadType
-  >({
-    defaultData: [],
-    requestFunction: getStoryIds,
-    payload: {
-      storyType
-    },
-    transformFunction: (res) => {
-      if (res.data) {
-        return Object.values(res.data)
-      } else {
-        return []
-      }
-    },
-    axiosCancelTokenSource: axios.CancelToken.source()
-  })
+  const { data, loading, error, refetch, request, reset } = useAsyncRequest<ResultDataType<number>>(
+    {
+      defaultData: [],
+      requestFunctions: [
+        {
+          func: getStoryIds,
+          payload: { storyType },
+          transform: (res) => {
+            if (res.data) {
+              return Object.values(res.data)
+            } else {
+              return []
+            }
+          }
+        }
+      ]
+    }
+  )
 
   const onRequestClick = async () => {
     const d = await request()
@@ -55,13 +53,15 @@ function StoryList() {
       <Button onClick={onRequestClick}>Request</Button>
       {error && <p>{error}</p>}
       <Spin spinning={loading}>
-        {data && (
-          <List
-            itemLayout="horizontal"
-            dataSource={data.slice(0, 10)}
-            renderItem={(item) => <Story storyId={item} />}
-          />
-        )}
+        <div>
+          {data && data[0] && (
+            <List
+              itemLayout="horizontal"
+              dataSource={data[0].slice(0, 10)}
+              renderItem={(item) => <Story storyId={item} />}
+            />
+          )}
+        </div>
       </Spin>
     </Wrapper>
   )

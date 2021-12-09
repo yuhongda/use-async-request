@@ -6,7 +6,7 @@ export async function getStoryIds(params: Record<string, any>) {
     method: 'get',
     params,
     errorTitle: 'Get Hacker News new stories failed',
-    cancelToken: params.source?.token
+    signal: params.controller?.signal
   })
 }
 
@@ -17,6 +17,6 @@ export async function getStoryById(params: Record<string, any>) {
     method: 'get',
     params,
     errorTitle: 'Get Hacker News new stories failed',
-    cancelToken: params.source?.token
+    signal: params.controller?.signal
   })
 }

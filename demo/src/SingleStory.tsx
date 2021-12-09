@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import './App.css'
 import { Button, Spin, Alert, Card, Pagination } from 'antd'
 import { AsyncRequest } from '../../src'
-import axios from 'axios'
 import { getStoryIds, getStoryById } from './api/hnApi'
 import styled from 'styled-components'
 
@@ -19,28 +18,48 @@ const Loading = styled.div`
   justify-content: center;
 `
 
-const SingleStory: React.FC<{}> = (props) => {
-  const StorySuccess = ({ data: { title = '', by = '', url = '' } }) => (
-    <Card
-      title={
-        <>
-          by: <strong>{by}</strong>
-        </>
-      }
-      style={{ width: 300 }}
-    >
-      <a href={url}>{title}</a>
-    </Card>
-  )
+type StoryData = {
+  by: string
+  url: string
+  title: string
+}
 
-  const Story = ({ data }: Record<string, number>) => {
-    const list = (data && Object.values(data).slice(0, 10)) || []
+const SingleStory: React.FC<{}> = (props) => {
+  const StorySuccess: React.FC<{ data: StoryData[]; refetch: () => void }> = ({
+    data,
+    refetch
+  }) => {
+    const { title = '', url = '', by = '' } = data?.[0]
+    return (
+      <Card
+        title={
+          <>
+            by: <strong>{by}</strong>
+          </>
+        }
+        style={{ width: 300 }}
+      >
+        <a href={url}>{title}</a>
+        <p>
+          <Button onClick={() => refetch()}>refetch</Button>
+        </p>
+      </Card>
+    )
+  }
+
+  const Story: React.FC<{ data: number[][] }> = ({ data }) => {
+    const list = (data && data[0] && Object.values(data[0]).slice(0, 10)) || []
     const [storyId, setStoryId] = useState(list[0])
+
     return (
       <>
         <AsyncRequest
-          requestFunction={getStoryById}
-          payload={{ storyId }}
+          requestFunctions={[
+            {
+              func: getStoryById,
+              payload: { storyId }
+            }
+          ]}
           success={StorySuccess}
           loading={
             <Spin spinning>
@@ -78,8 +97,12 @@ const SingleStory: React.FC<{}> = (props) => {
   return (
     <Container>
       <AsyncRequest
-        requestFunction={getStoryIds}
-        payload={{ storyType: 'topstories' }}
+        requestFunctions={[
+          {
+            func: getStoryIds,
+            payload: { storyType: 'topstories' }
+          }
+        ]}
         success={Story}
       />
     </Container>
