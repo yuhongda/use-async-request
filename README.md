@@ -30,6 +30,13 @@ OR
 yarn add use-async-request
 ```
 
+## 🔗 CDN
+If you are working w/ [UNPKG](https://unpkg.com/)
+
+[https://unpkg.com/use-async-request@1.1.0/lib/umd/use-async-request.min.js](https://unpkg.com/use-async-request@1.1.0/lib/umd/use-async-request.min.js)
+
+
+
 ## 🔗 Usage
 
 ```jsx
