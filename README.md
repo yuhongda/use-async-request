@@ -16,6 +16,7 @@
 
 
 ![Size](https://badgen.net/bundlephobia/minzip/use-async-request)
+[![npm version](https://badge.fury.io/js/use-async-request.svg)](https://badge.fury.io/js/use-async-request)
 
 ## 🔗 Installation
 
