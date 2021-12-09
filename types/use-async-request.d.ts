@@ -1,40 +1,25 @@
-interface Cancel {
-  message: string;
-}
+import * as React from 'react';
+import React__default, { ReactNode } from 'react';
 
-interface Canceler {
-  (message?: string): void;
-}
-
-interface CancelToken {
-  promise: Promise<Cancel>;
-  reason?: Cancel;
-  throwIfRequested(): void;
-}
-
-interface CancelTokenSource {
-  token: CancelToken;
-  cancel: Canceler;
-}
-
-declare type RequestFunction = (...args: any[]) => Promise<any>;
 declare type TransformFunction<TData> = (res: any) => TData;
-declare type UseAsyncRequestOptions<Data, RequestFunction> = {
-    defaultData: Data;
-    requestFunction: RequestFunction;
+declare type RequestFunction<TData> = {
+    func: (...args: any[]) => Promise<any>;
     payload?: any;
+    transform?: TransformFunction<TData>;
+};
+declare type UseAsyncRequestOptions<Data> = {
+    defaultData?: (Data | null)[] | null;
+    requestFunctions: RequestFunction<Data>[];
     auto?: boolean;
-    transformFunction?: TransformFunction<Data>;
-    axiosCancelTokenSource?: CancelTokenSource;
 };
 declare type UseAsyncRequestData<Data> = {
-    data: Data | null;
+    data: (Data | null)[] | null;
     loading: boolean;
     error: any;
 };
-interface UseAsyncRequestResults<Data, RequestFunction> extends UseAsyncRequestData<Data> {
+interface UseAsyncRequestResults<Data> extends UseAsyncRequestData<Data> {
     refetch: () => void;
-    request: () => Promise<Data | null>;
+    request: () => Promise<(Data | null)[] | null>;
     reset: () => void;
 }
 declare enum UseAsyncRequestActionType {
@@ -47,17 +32,34 @@ declare type UseAsyncRequestAction<TData> = {
     type: UseAsyncRequestActionType.FETCH;
 } | {
     type: UseAsyncRequestActionType.SUCCESS;
-    data: TData | null;
+    data: TData[] | null;
 } | {
     type: UseAsyncRequestActionType.ERROR;
     error: any;
 } | {
     type: UseAsyncRequestActionType.RESET;
 };
-declare const useAsyncRequest: <TData, RequestFunc extends RequestFunction>(options: UseAsyncRequestOptions<TData, RequestFunc>) => UseAsyncRequestResults<TData, RequestFunc>;
+declare const useAsyncRequest: <TData>(options: UseAsyncRequestOptions<TData>) => UseAsyncRequestResults<TData>;
+
+interface AsyncRequestProps<TData> {
+    defaultData?: any;
+    requestFunctions: RequestFunction<TData>[];
+    loading?: ReactNode;
+    success: React__default.FC<{
+        data: TData[];
+        refetch: () => void;
+    }>;
+    error?: React__default.FC<{
+        error: any;
+        refetch: () => void;
+    }>;
+    children?: ReactNode;
+}
+declare const AsyncRequest: React__default.FC<AsyncRequestProps<any>>;
 
 declare const _default: {
-    useAsyncRequest: <TData, RequestFunc extends RequestFunction>(options: UseAsyncRequestOptions<TData, RequestFunc>) => UseAsyncRequestResults<TData, RequestFunc>;
+    useAsyncRequest: <TData>(options: UseAsyncRequestOptions<TData>) => UseAsyncRequestResults<TData>;
+    AsyncRequest: React.FC<AsyncRequestProps<any>>;
 };
 
-export { RequestFunction, TransformFunction, UseAsyncRequestAction, UseAsyncRequestOptions, UseAsyncRequestResults, _default as default, useAsyncRequest };
+export { AsyncRequest, AsyncRequestProps, RequestFunction, TransformFunction, UseAsyncRequestAction, UseAsyncRequestOptions, UseAsyncRequestResults, _default as default, useAsyncRequest };
