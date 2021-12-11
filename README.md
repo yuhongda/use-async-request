@@ -17,7 +17,7 @@
 - 🌈 Support multi resquest (request sequentially)
 - 🎁 Ship React UI component `<AsyncRequest />`
 - 💪 Type safety
-- ☘️ Size less than 1KB
+- ☘️ Size ≈ 1.2KB
 
 
 ## 🔗 Installation
