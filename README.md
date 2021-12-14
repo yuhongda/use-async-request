@@ -16,7 +16,7 @@
 ## 🎨 Features
 
 - 🌟 Make async request w/ loading state, and the request is cancellable
-- 🌈 Support multi resquest (request sequentially)
+- 🌈 Support multi resquest (request sequentially by default)
 - 🎁 Ship React UI component `<AsyncRequest />`
 - 💪 Type safety
 - ☘️ Size ≈ 1.2KB
@@ -135,5 +135,6 @@ const StorySuccess = ({ data, refetch }) => {
 
 - [x] Batch async request
 - [x] `<AsyncRequest /> ` React UI components w/ demo
+- [ ] Add `sequentially` option for multi requests
 - [ ] persisted
 - [ ] More detail docs
