@@ -41,6 +41,8 @@ If you are working w/ [UNPKG](https://unpkg.com/)
 
 ## 🔗 Usage
 
+### 👉 use-async-request
+
 ```jsx
 import { useAsyncRequest } from 'use-async-request'
 
@@ -83,6 +85,41 @@ const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
   )
 }
 ```
+
+### 👉 `<AsyncRequest />`
+
+```jsx
+<AsyncRequest
+  requestFunctions={[
+    {
+      func: getStoryById,
+      payload: { storyId }
+    }
+  ]}
+  success={StorySuccess}
+  loading={
+    <span>Loading...</span>
+  }
+  error={({ error, refetch }) => (
+    <div>
+      {error.message}
+      <button onClick={() => refetch()}>refetch</button>
+    </div>
+  )}
+/>
+
+const StorySuccess = ({ data, refetch }) => {
+  const { title = "", url = "", by = "" } = data?.[0];
+  return (
+    <section>
+      <p><a href={url}>{title}</a></p>
+      <p>{by}</p>
+      <button onClick={() => refetch()}>refetch</button>
+    </section>
+  );
+};
+```
+
 
 ## 🔗 Roadmap
 
