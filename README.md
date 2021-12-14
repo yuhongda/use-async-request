@@ -41,7 +41,7 @@ If you are working w/ [UNPKG](https://unpkg.com/)
 
 ## 🔗 Usage
 
-### 👉 use-async-request
+### 👉 useAsyncRequest()
 
 ```jsx
 import { useAsyncRequest } from 'use-async-request'
