@@ -108,6 +108,16 @@ const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
   )}
 />
 
+async function getStoryById(params) {
+  return axios({
+    url: `https://hacker-news.firebaseio.com/v0/item/${params.storyId}.json?print=pretty`,
+    method: 'get',
+    params,
+    errorTitle: 'Get Hacker News story failed',
+    signal: params.controller?.signal,
+  });
+}
+
 const StorySuccess = ({ data, refetch }) => {
   const { title = "", url = "", by = "" } = data?.[0];
   return (
