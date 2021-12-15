@@ -173,7 +173,7 @@ Type: `(res: any) => TData`
 - `auto`
 > using this option to make request run automatically
 
-Type: `boolean`
+Type: `boolean`  
 Default: `true`
 
 ## Returns
