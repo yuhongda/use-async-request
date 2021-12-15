@@ -130,6 +130,78 @@ const StorySuccess = ({ data, refetch }) => {
 };
 ```
 
+## Options
+
+- `defaultData` 
+> The default data to render.
+
+Type: `any`  
+Default: `null`
+
+- `requestFunctions`
+> The request APIs goes here. you can set payload and transform function for every single request.
+
+Type: `RequestFunction<TData>[]`  
+Default: `[]`
+
+- `requestFunctions.func`
+> The request function
+
+Type: `(...args: any[]) => Promise<any>`  
+
+- `requestFunctions.payload`
+> The request function should be like below. params can take instance of AbortController in order to cancel request.
+```js
+async function getStoryIds(params) {
+  return axios({
+    url: `${params.storyType}.json?print=pretty`,
+    method: 'get',
+    params,
+    errorTitle: 'Get Hacker News new stories failed',
+    signal: params.controller?.signal
+  })
+}
+```
+
+Type: `(...args: any[]) => Promise<any>`  
+
+- `requestFunctions.transform`
+> you can use this option to process the data that receive from Api
+
+Type: `(res: any) => TData`  
+
+- `auto`
+> using this option to make request run automatically
+
+Type: `boolean`
+Default: `true`
+
+## Returns
+
+- `data`
+> The data that you request
+
+- `loading`
+> The loading statement
+
+Type: `boolean`
+
+- `error`
+
+- `refetch`
+> retrigger the request action
+
+Type: `() => void`
+
+- `request`
+> If you want to request data manually, use this.
+
+Type: `() => Promise<(Data | null)[] | null>`
+
+- `reset`
+> Back to the start, render using the `defaultData`
+
+Type: `() => void`
 
 ## 🔗 Roadmap
 
