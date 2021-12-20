@@ -83,6 +83,13 @@ export const useAsyncRequest = <TData>(
 
   const requestFunctionsCallback = useCallback(async () => {
     const results = []
+    console.log(
+      JSON.stringify(
+        requestFunctions.map((req) => {
+          return { name: req.func.name, payload: req.payload }
+        })
+      )
+    )
     for (const request of requestFunctions) {
       const res = await request.func({ ...request.payload, controller: abortController })
 
@@ -101,7 +108,7 @@ export const useAsyncRequest = <TData>(
       results.push(data)
     }
     return results
-  }, [JSON.stringify(requestFunctions.map(req => req.payload)), updateKey])
+  }, [JSON.stringify(requestFunctions.map((req) => req.payload)), updateKey])
 
   const fetchDataCallback = useCallback<() => Promise<TData[] | null>>(async () => {
     if (updateKey === 0) {
