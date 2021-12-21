@@ -12,7 +12,7 @@ const get = (key: string) => {
       return null
     }
   } catch (error) {
-    throw new Error(`Failed to get value from localStorage`)
+    console.warn(`Failed to get value from localStorage`)
   }
 }
 
@@ -22,7 +22,7 @@ const set = (key: string, value: unknown) => {
     store[key] = null
   } catch (error) {
     store[key] = value
-    throw new Error(`Failed to set value to localStorage`)
+    console.warn(`Failed to set value to localStorage, use memory instead`)
   }
 }
 
@@ -32,7 +32,7 @@ const remove = (key: string) => {
     store[key] = null
   } catch (error) {
     store[key] = null
-    throw new Error(`Failed to remove value from localStorage`)
+    console.warn(`Failed to remove value from localStorage, use memory instead`)
   }
 }
 

@@ -1,6 +1,30 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import { useAsyncRequest } from '../src/'
-import axios from 'axios'
+
+beforeEach(() => {
+  const localStorageMock = (function () {
+    let store: Record<string, unknown> = {}
+
+    return {
+      getItem: function (key: string) {
+        return store[key]
+      },
+      setItem: function (key: string, value: unknown) {
+        store[key] = value
+      },
+      removeItem: function (key: string) {
+        delete store[key]
+      },
+      clear: function () {
+        store = {}
+      }
+    }
+  })()
+
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock
+  })
+})
 
 describe('use-async-request() testing', () => {
   it('useAsyncRequest run correctly', async () => {
@@ -243,6 +267,85 @@ describe('use-async-request() testing', () => {
       await waitForNextUpdate()
     } catch (e) {
       expect(e).toEqual(new Error('"requestFunctions" is required'))
+    }
+  })
+
+  it('testing persistent', async () => {
+    const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useAsyncRequest<string>({
+        defaultData: [''],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ],
+        persistent: true,
+        persistentKey: 'test'
+      })
+    )
+    const key = `test-${JSON.stringify(
+      [
+        {
+          func: mockFetch
+        }
+      ].map((req) => {
+        return { name: req.func.name, payload: req.payload }
+      })
+    )}`
+
+    expect(result.current.data?.[0]).toEqual('')
+    expect(result.current.loading).toBe(true)
+    expect(result.current.error).toBe(null)
+    expect(mockFetch).toBeCalledTimes(1)
+    await waitForNextUpdate()
+    const data = JSON.parse(localStorage.getItem(key) || 'null')
+    const value = data.value
+    expect(value[0]).toBe('ok')
+    act(() => result.current.refetch())
+    await waitForNextUpdate()
+    const data2 = JSON.parse(localStorage.getItem(key) || 'null')
+    const value2 = data.value
+    expect(value2[0]).toBe('ok')
+  })
+
+  it('testing persistentKey is null', async () => {
+    const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
+    jest.spyOn(console, 'warn').mockImplementation()
+    try {
+      const { result, waitForNextUpdate } = renderHook(() =>
+        useAsyncRequest<string>({
+          defaultData: [''],
+          requestFunctions: [
+            {
+              func: mockFetch
+            }
+          ],
+          persistent: true
+        })
+      )
+      const key = `test-${JSON.stringify(
+        [
+          {
+            func: mockFetch
+          }
+        ].map((req) => {
+          return { name: req.func.name, payload: req.payload }
+        })
+      )}`
+
+      expect(result.current.data?.[0]).toEqual('')
+      expect(result.current.loading).toBe(true)
+      expect(result.current.error).toBe(null)
+      await waitForNextUpdate()
+      const data = JSON.parse(localStorage.getItem(key) || 'null')
+      const value = data.value
+      expect(value[0]).toBe('ok')
+      expect(console.warn).toHaveBeenCalledWith(
+        expect.stringContaining('[use-async-request] "persistentKey" is required. Data will not be loaded from localStorage.'),
+      )
+    } catch (e) {
+      console.log(e)
     }
   })
 })
