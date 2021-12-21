@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react'
+import React, { useCallback, useEffect, useReducer, useState, useRef } from 'react'
 import store from './store'
 
 export type TransformFunction<TData> = (res: any) => TData
@@ -13,6 +13,9 @@ export type UseAsyncRequestOptions<Data> = {
   defaultData?: (Data | null)[] | null
   requestFunctions: RequestFunction<Data>[]
   auto?: boolean
+  persistent?: boolean
+  persistentKey?: string
+  persistentExpiration?: number
 }
 
 export type UseAsyncRequestData<Data> = {
@@ -51,7 +54,14 @@ const defaultTransformFunction = <TData>(res: any): TData => res?.data
 export const useAsyncRequest = <TData>(
   options: UseAsyncRequestOptions<TData>
 ): UseAsyncRequestResults<TData> => {
-  const { defaultData = null, requestFunctions, auto = true } = options
+  const {
+    defaultData = null,
+    requestFunctions,
+    auto = true,
+    persistent = false,
+    persistentKey,
+    persistentExpiration = 1000 * 60
+  } = options
 
   if (!requestFunctions || !Array.isArray(requestFunctions) || requestFunctions.length == 0) {
     throw new Error('"requestFunctions" is required')
@@ -61,6 +71,8 @@ export const useAsyncRequest = <TData>(
   const [updateKey, setUpdateKey] = useState<number>(() => {
     return auto ? +new Date() : 0
   })
+  const isRefetch = useRef(false)
+
   const [result, dispatch] = useReducer(
     (
       result: UseAsyncRequestData<TData>,
@@ -83,24 +95,6 @@ export const useAsyncRequest = <TData>(
   )
 
   const requestFunctionsCallback = useCallback(async () => {
-
-    /**
-     * Load data from localStorage
-     */
-    const now = +new Date()
-    const key = JSON.stringify(
-      requestFunctions.map((req) => {
-        return { name: req.func.name, payload: req.payload }
-      })
-    )
-    const data = store.get(key)
-    if (data && data.expiration >= now) {
-      return data.value
-    }
-
-    /**
-     * Fetch data from API & save to localStorage
-     */
     const results = []
     for (const request of requestFunctions) {
       const res = await request.func({ ...request.payload, controller: abortController })
@@ -120,30 +114,73 @@ export const useAsyncRequest = <TData>(
       results.push(data)
     }
 
-    store.set(key, {
-      value: results,
-      expiration: now + 1000 * 60
-    })
-
     return results
   }, [JSON.stringify(requestFunctions.map((req) => req.payload)), updateKey])
 
-  const fetchDataCallback = useCallback<() => Promise<TData[] | null>>(async () => {
-    if (updateKey === 0) {
-      return null
-    }
+  const fetchDataCallback = useCallback<(isRequestFunc?: boolean) => Promise<TData[] | null>>(
+    async (isRequestFunc) => {
+      if (updateKey === 0 && !isRequestFunc) {
+        return null
+      }
 
-    dispatch({ type: UseAsyncRequestActionType.FETCH })
-    try {
-      const data = await requestFunctionsCallback()
+      dispatch({ type: UseAsyncRequestActionType.FETCH })
+      try {
+        let data = null
+        const now = +new Date()
+        /**
+         * Load data from localStorage
+         */
+        if (persistent && persistentKey) {
+          const key = `${persistentKey}-${JSON.stringify(
+            requestFunctions.map((req) => {
+              return { name: req.func.name, payload: req.payload }
+            })
+          )}`
+          data = store.get(key)
+          if (
+            data &&
+            data.expiration >= now &&
+            data.value != null &&
+            !isRequestFunc &&
+            !isRefetch.current
+          ) {
+            data = data.value
+          } else {
+            /**
+             * Fetch data from API & save to localStorage
+             */
+            data = await requestFunctionsCallback()
+            store.set(key, {
+              value: data,
+              expiration: now + persistentExpiration
+            })
+          }
+        } else {
+          if (persistent && !persistentKey) {
+            console.warn(
+              '[use-async-request] "persistentKey" is required. Data will not be loaded from localStorage.'
+            )
+          }
+          /**
+           * Fetch data from API
+           */
+          data = await requestFunctionsCallback()
+        }
 
-      dispatch({ type: UseAsyncRequestActionType.SUCCESS, data })
-      return data
-    } catch (error) {
-      dispatch({ type: UseAsyncRequestActionType.ERROR, error })
-      return null
-    }
-  }, [requestFunctionsCallback])
+        // reset refetch flag
+        if (isRefetch.current) {
+          isRefetch.current = false
+        }
+
+        dispatch({ type: UseAsyncRequestActionType.SUCCESS, data })
+        return data
+      } catch (error) {
+        dispatch({ type: UseAsyncRequestActionType.ERROR, error })
+        return null
+      }
+    },
+    [requestFunctionsCallback]
+  )
 
   useEffect(() => {
     fetchDataCallback()
@@ -156,11 +193,12 @@ export const useAsyncRequest = <TData>(
   }, [fetchDataCallback])
 
   const refetch = useCallback(() => {
+    isRefetch.current = true
     setUpdateKey(+new Date())
   }, [fetchDataCallback])
 
   const request = useCallback(() => {
-    return fetchDataCallback()
+    return fetchDataCallback(true)
   }, [fetchDataCallback])
 
   const reset = useCallback(() => {
