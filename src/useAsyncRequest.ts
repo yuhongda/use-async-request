@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react'
+import store from './store'
 
 export type TransformFunction<TData> = (res: any) => TData
 
@@ -82,14 +83,25 @@ export const useAsyncRequest = <TData>(
   )
 
   const requestFunctionsCallback = useCallback(async () => {
-    const results = []
-    console.log(
-      JSON.stringify(
-        requestFunctions.map((req) => {
-          return { name: req.func.name, payload: req.payload }
-        })
-      )
+
+    /**
+     * Load data from localStorage
+     */
+    const now = +new Date()
+    const key = JSON.stringify(
+      requestFunctions.map((req) => {
+        return { name: req.func.name, payload: req.payload }
+      })
     )
+    const data = store.get(key)
+    if (data && data.expiration >= now) {
+      return data.value
+    }
+
+    /**
+     * Fetch data from API & save to localStorage
+     */
+    const results = []
     for (const request of requestFunctions) {
       const res = await request.func({ ...request.payload, controller: abortController })
 
@@ -107,6 +119,12 @@ export const useAsyncRequest = <TData>(
 
       results.push(data)
     }
+
+    store.set(key, {
+      value: results,
+      expiration: now + 1000 * 60
+    })
+
     return results
   }, [JSON.stringify(requestFunctions.map((req) => req.payload)), updateKey])
 
