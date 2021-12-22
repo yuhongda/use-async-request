@@ -20,7 +20,9 @@ const Story: React.FC<{ storyId: number }> = ({ storyId }) => {
           storyId
         }
       }
-    ]
+    ],
+    persistent: true,
+    persistentKey: 'story'
   })
 
   const story = data?.[0] as StoryData | null

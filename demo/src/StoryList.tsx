@@ -32,7 +32,9 @@ function StoryList() {
             }
           }
         }
-      ]
+      ],
+      persistent: true,
+      persistentKey: 'storyList'
     }
   )
 
