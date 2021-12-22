@@ -176,6 +176,34 @@ Type: `(res: any) => TData`
 Type: `boolean`  
 Default: `true`
 
+- `persistent`
+> Enable data persistent. If set it `true`, the data that request from api will store into `localStorage` with given key(`persistentKey`), and then the next request data will be load from localStorage instead. The persistent data will always be available until `persistentExpiration` date.  
+> ⚠️ NOTE: `refetch()` and `request()` will ignore `persistent`, it will always load data through api function, AND refresh the `expiration` date.
+
+Type: `boolean`  
+Default: `false`
+
+- `persistentKey`
+> The prefix key of the persisted data, which the entire key base on it. The entire key will generate like below:   
+> ⚠️ NOTE: This option needs to be set with `persistent` at the same time.
+```js
+// generate key
+const key = `${persistentKey}-${JSON.stringify(
+  requestFunctions.map((req) => {
+    return { name: req.func.name, payload: req.payload }
+  })
+)}`
+```
+
+Type: `string`  
+Default: `''`
+
+- `persistentExpiration`
+> The expiration time. (ms)
+
+Type: `number`  
+Default: `1000 * 60`
+
 ## Returns
 
 - `data`
@@ -208,5 +236,5 @@ Type: `() => void`
 - [x] Batch async request
 - [x] `<AsyncRequest /> ` React UI components w/ demo
 - [ ] Add `sequentially` option for multi requests
-- [ ] persisted
+- [x] persistent
 - [ ] More detail docs
