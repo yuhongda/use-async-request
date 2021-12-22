@@ -1,4 +1,4 @@
-const store: Record<string, unknown> = {}
+let store: Record<string, unknown> = {}
 
 const get = (key: string) => {
   if (store[key]) return store[key]
@@ -36,8 +36,19 @@ const remove = (key: string) => {
   }
 }
 
+const clear = () => {
+  try {
+    localStorage.clear()
+    store = {}
+  } catch (error) {
+    store = {}
+    console.warn(`Failed to clear value from localStorage, use memory instead`)
+  }
+}
+
 export default {
   get,
   set,
-  remove
+  remove,
+  clear
 }
