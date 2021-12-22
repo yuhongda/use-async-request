@@ -11,6 +11,9 @@ declare type UseAsyncRequestOptions<Data> = {
     defaultData?: (Data | null)[] | null;
     requestFunctions: RequestFunction<Data>[];
     auto?: boolean;
+    persistent?: boolean;
+    persistentKey?: string;
+    persistentExpiration?: number;
 };
 declare type UseAsyncRequestData<Data> = {
     data: (Data | null)[] | null;
