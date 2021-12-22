@@ -1,6 +1,6 @@
 {
   "name": "use-async-request",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A Custom React Hook for request data.",
   "main": "lib/index.js",
   "module": "lib/esm/use-async-request.esm.js",
