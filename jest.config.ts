@@ -8,7 +8,7 @@ export default {
   collectCoverage: true,
   collectCoverageFrom: ['<rootDir>/src/**/*.{js,jsx,ts,tsx}'],
   coverageDirectory: '<rootDir>/__test__/coverage',
-  coverageProvider: 'v8',
+  coverageProvider: 'babel',
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   setupFiles: ['<rootDir>/__test__/setup.js'],
   testEnvironment: 'jsdom',

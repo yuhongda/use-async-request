@@ -1,5 +1,6 @@
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook, act, cleanup } from '@testing-library/react-hooks'
 import { useAsyncRequest } from '../src/'
+import React from 'react'
 
 beforeEach(() => {
   const localStorageMock = (function () {
@@ -163,6 +164,52 @@ describe('use-async-request() testing', () => {
     expect(result.current.error).toBe(null)
   })
 
+  it('testing refetch2', async () => {
+    let count = 0
+    const mockFetch = jest.fn(() => {
+      count++
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            data: count
+          })
+        }, 10000)
+      })
+    })
+    const { result, rerender } = renderHook(({ initialValue }) => useAsyncRequest(initialValue), {
+      initialProps: {
+        initialValue: {
+          defaultData: [0],
+          requestFunctions: [
+            {
+              func: mockFetch,
+              payload: {
+                count: 1
+              }
+            }
+          ]
+        }
+      }
+    })
+    act(() => result.current.refetch())
+
+    rerender({
+      initialValue: {
+        defaultData: [2],
+        requestFunctions: [
+          {
+            func: mockFetch,
+            payload: {
+              count: 2
+            }
+          }
+        ]
+      }
+    })
+
+    expect(result.current.data?.[0]).toEqual(2)
+  })
+
   it('testing request', async () => {
     let count = 0
     const mockFetch = jest.fn(() => {
@@ -272,7 +319,7 @@ describe('use-async-request() testing', () => {
 
   it('testing persistent', async () => {
     const mockFetch = jest.fn(() => Promise.resolve({ data: 'ok' }))
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const res1 = renderHook(() =>
       useAsyncRequest<string>({
         defaultData: [''],
         requestFunctions: [
@@ -294,16 +341,35 @@ describe('use-async-request() testing', () => {
       })
     )}`
 
-    expect(result.current.data?.[0]).toEqual('')
-    expect(result.current.loading).toBe(true)
-    expect(result.current.error).toBe(null)
+    expect(res1.result.current.data?.[0]).toEqual('')
+    expect(res1.result.current.loading).toBe(true)
+    expect(res1.result.current.error).toBe(null)
     expect(mockFetch).toBeCalledTimes(1)
-    await waitForNextUpdate()
+    await res1.waitForNextUpdate()
     const data = JSON.parse(localStorage.getItem(key) || 'null')
     const value = data.value
     expect(value[0]).toBe('ok')
-    act(() => result.current.refetch())
-    await waitForNextUpdate()
+
+    const res2 = renderHook(() =>
+      useAsyncRequest<string>({
+        defaultData: [''],
+        requestFunctions: [
+          {
+            func: mockFetch
+          }
+        ],
+        persistent: true,
+        persistentKey: 'test'
+      })
+    )
+
+    expect(res2.result.current.data?.[0]).toEqual('ok')
+    const dataCache = JSON.parse(localStorage.getItem(key) || 'null')
+    const valueCache = dataCache.value
+    expect(valueCache[0]).toBe('ok')
+
+    act(() => res1.result.current.refetch())
+    await res1.waitForNextUpdate()
     const data2 = JSON.parse(localStorage.getItem(key) || 'null')
     const value2 = data.value
     expect(value2[0]).toBe('ok')
@@ -342,7 +408,9 @@ describe('use-async-request() testing', () => {
       const value = data.value
       expect(value[0]).toBe('ok')
       expect(console.warn).toHaveBeenCalledWith(
-        expect.stringContaining('[use-async-request] "persistentKey" is required. Data will not be loaded from localStorage.'),
+        expect.stringContaining(
+          '[use-async-request] "persistentKey" is required. Data will not be loaded from localStorage.'
+        )
       )
     } catch (e) {
       console.log(e)

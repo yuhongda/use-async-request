@@ -4,8 +4,9 @@
   "description": "A Custom React Hook for request data.",
   "main": "lib/index.js",
   "module": "lib/esm/use-async-request.esm.js",
-  "unpkg": "lib/umd/use-async-request.js",
-  "jsdelivr": "lib/umd/use-async-request.js",
+  "unpkg": "lib/umd/use-async-request.min.js",
+  "jsdelivr": "lib/umd/use-async-request.min.js",
+  "types": "types/use-async-request.d.ts",
   "files": [
     "lib/",
     "types/",

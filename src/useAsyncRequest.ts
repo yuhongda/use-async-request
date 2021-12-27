@@ -55,7 +55,7 @@ export const useAsyncRequest = <TData>(
   options: UseAsyncRequestOptions<TData>
 ): UseAsyncRequestResults<TData> => {
   const {
-    defaultData = null,
+    defaultData,
     requestFunctions,
     auto = true,
     persistent = false,
@@ -87,8 +87,6 @@ export const useAsyncRequest = <TData>(
           return { ...result, data: defaultData, loading: false, error: action.error }
         case UseAsyncRequestActionType.RESET:
           return { ...result, data: defaultData, loading: false, error: null }
-        default:
-          return result
       }
     },
     Object.assign({}, defaultResult, { data: defaultData })
@@ -186,9 +184,7 @@ export const useAsyncRequest = <TData>(
     fetchDataCallback()
 
     return () => {
-      if (abortController) {
-        abortController.abort()
-      }
+      abortController.abort()
     }
   }, [fetchDataCallback])
 
