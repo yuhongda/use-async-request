@@ -18,6 +18,9 @@ jobs:
       - name: install yarn
         run: |
           npm install -g yarn
+      - name: install deps
+        run: |
+          yarn
       - run: yarn ci
       - run: yarn test
 
@@ -33,6 +36,9 @@ jobs:
       - name: install yarn
         run: |
           npm install -g yarn
+      - name: install deps
+        run: |
+          yarn
       - run: yarn ci
       - run: npm publish
         env:
