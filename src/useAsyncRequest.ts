@@ -10,7 +10,7 @@ export type RequestFunction<TData> = {
 }
 
 export type UseAsyncRequestOptions<Data> = {
-  defaultData?: (Data | null)[] | null
+  defaultData?: (Data | null)[] | null | undefined
   requestFunctions: RequestFunction<Data>[]
   auto?: boolean
   persistent?: boolean
