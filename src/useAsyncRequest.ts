@@ -19,7 +19,7 @@ export type UseAsyncRequestOptions<Data> = {
 }
 
 export type UseAsyncRequestData<Data> = {
-  data: (Data | null)[] | null
+  data: (Data | null)[] | null | undefined
   loading: boolean
   error: any
 }
