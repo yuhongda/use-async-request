@@ -41,6 +41,9 @@
     "type": "git",
     "url": "https://github.com/yuhongda/use-async-request.git"
   },
+  "publishConfig": {
+    "yuhongda:registry": "https://npm.pkg.github.com"
+  },
   "author": "yuhongda <silverage.y@gmail.com>",
   "license": "MIT",
   "devDependencies": {
