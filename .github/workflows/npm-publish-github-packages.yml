@@ -16,11 +16,9 @@ jobs:
         with:
           node-version: 16
       - name: Install Yarn
-        run: |
-          npm install -g yarn
+        run: npm install -g yarn
       - name: Install Deps
-        run: |
-          yarn
+        run: yarn
       - run: yarn ci
       - run: yarn test
 
@@ -37,11 +35,9 @@ jobs:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
       - name: Install Yarn
-        run: |
-          npm install -g yarn
+        run: npm install -g yarn
       - name: Install Deps
-        run: |
-          yarn
+        run: yarn
       - run: yarn ci
       - run: npm publish
         env:
