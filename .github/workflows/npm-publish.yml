@@ -17,10 +17,18 @@ jobs:
           node-version: 16
       - name: Install Yarn
         run: npm install -g yarn
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Install Deps
         run: yarn
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: yarn ci
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: yarn test
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
 
   publish-gpr:
     needs: build
@@ -36,9 +44,15 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - name: Install Yarn
         run: npm install -g yarn
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Install Deps
         run: yarn
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: yarn ci
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: npm publish
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
