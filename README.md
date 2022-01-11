@@ -22,7 +22,7 @@
 - ☘️ Size ≈ 1.2KB
 
 
-## 🔗 Installation
+## Installation
 
 ```js
 npm install --save use-async-request
@@ -32,14 +32,14 @@ OR
 yarn add use-async-request
 ```
 
-## 🔗 CDN
+## CDN
 If you are working w/ [UNPKG](https://unpkg.com/)
 
 [https://unpkg.com/use-async-request@1.1.0/lib/umd/use-async-request.min.js](https://unpkg.com/use-async-request@1.1.0/lib/umd/use-async-request.min.js)
 
 
 
-## 🔗 Usage
+## Usage
 
 ### 👉 useAsyncRequest()
 
