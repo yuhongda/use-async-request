@@ -231,7 +231,7 @@ Type: `() => Promise<(Data | null)[] | null>`
 
 Type: `() => void`
 
-## 🔗 Roadmap
+## Roadmap
 
 - [x] Batch async request
 - [x] `<AsyncRequest /> ` React UI components w/ demo
